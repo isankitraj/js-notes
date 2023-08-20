@@ -1,4 +1,7 @@
 'use strict';
+// always remember to convert the input string to lowercase first. this way it is easier to use conditionals over them.
+
+
 
 const airline = 'AIR india';
 // const plane = 'A320'
@@ -89,3 +92,5 @@ const checkBaggage = function (items) {
 checkBaggage('I have a laptop, some Food and a pocket Knife');
 checkBaggage('Socks and camera')
 checkBaggage('Got some snacks and a gun for protection')
+
+
