@@ -1,7 +1,5 @@
 "use strict";
 
-
-
 // very much used thing in js
 const oneWord = function (str) {
   return str.replaceAll(" ", "").toLowerCase();
@@ -30,12 +28,10 @@ const high5 = function () {
 
 // document.body.addEventListener("click", high5); // high5 is the callback function and addeventlistener is the hihger order function.
 
-
 // js uses callbacks all the time
-["Jonas", "Martha", "Adam"].forEach(high5);  // high5 is the callback function
-
-
-
+["Jonas", "Martha", "Adam"].forEach(high5); // high5 is the callback function
 
 // advantages of callback function
 // callback function able to provide abstraction.
+
+
