@@ -10,7 +10,7 @@
 ## What's inside the Execution Context?
 ```
 1. Variable Environment ( let, const, var declarations, functions, arguements objext)
-2. Scope chain
+2. Scope chain ( variable scoping thing, block scoped etc.)
 3. this keyword.
 ```
 
