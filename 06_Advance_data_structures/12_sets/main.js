@@ -21,7 +21,7 @@ for (const element of orderSet) {
     console.log(element);
 }
 
-// generally used for removing duplicated from an array
+// generally used for removing duplicates from an array
 const staff = ['Waiter', 'Chef', 'Waiter', 'Mananger', 'Chef', 'Waiter'];
 
 const staffUnique = [...new Set(staff)];

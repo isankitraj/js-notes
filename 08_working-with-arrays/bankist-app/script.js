@@ -33,6 +33,7 @@ const account4 = {
   pin: 4444,
 };
 
+// all the accounts
 const accounts = [account1, account2, account3, account4];
 
 // Elements
@@ -61,16 +62,28 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+
+////////////////////////////////////////////////
+const displayMovements = function (movements) {
+  // first empty the movements container
+  containerMovements.innerHTML = ''; // innerHTML is similar to the textcontent. the only difference is that text content only returns the text content of an element while innerHTML returns the whole element with html tags also.
+
+  movements.forEach(function (mov, i) {
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+    // template literals are amazing to create html like below
+    const html = `
+  <div class="movements__row">
+    <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+    <div class="movements__date">3 days ago</div>
+    <div class="movements__value">${mov}</div>
+  </div>
+`;
+
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
+
+displayMovements(account1.movements);
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-// LECTURES
-
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
-
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-/////////////////////////////////////////////////
+// now to add this above generated html to a contianer, we will use insertadjacent element
