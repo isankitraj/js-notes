@@ -179,7 +179,6 @@ btnLogin.addEventListener('click', function (e) {
   }
 });
 
-
 // transfer money
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
@@ -195,10 +194,64 @@ btnTransfer.addEventListener('click', function (e) {
     receiverAcc?.username !== currentAccount.username
   ) {
     //doing the transefer
-   currentAccount.movements.push(-amount);
-   receiverAcc.movements.push(amount);
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
 
-   // upating the ui
-   updateUI(currentAccount)
+    // upating the ui
+    updateUI(currentAccount);
   }
 });
+
+// close account - find index method of array - works same as find, it returns the index of found eleemnt and note the element itself
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault(); // to prevent it from ...
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+
+    // deleting the account
+    accounts.splice(index, 1);
+
+    // hiding the ui
+    containerApp.style.opacity = 0;
+  }
+
+  // clearing the input fields.- it works only after reading the value from input field. this was a freaking bug.
+  inputLoginUsername.value = inputLoginPin.value = '';
+});
+
+// some method -- requesting a bank loan
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= 0.1 * amount)) {
+    // Add the movement
+    currentAccount.movements.push(amount);
+
+    // update the ui
+    updateUI(currentAccount);
+  }
+
+  inputLoanAmount.value = '';
+});
+
+
+
+
+// using flat method to calculate the total movments.
+const accountMovements = accounts.map(acc => acc.movements); // this will return an array of movements of different acconts
+const allMovements = accountMovements.flat().reduce((acc, mov) => acc + mov, 0); // this will give total movements of all the accounts and sum it all up.
+console.log(allMovements);
+
+
+// flatmap combines both flat and map methods of array
+const overallBalance2 = accounts.flatMap(acc => acc.movements)
+console.log(overallBalance2);
+// flatmap only goes 1 level deep and we cannot change it. for more nested use flat.
