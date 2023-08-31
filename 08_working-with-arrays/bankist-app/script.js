@@ -63,11 +63,13 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 ////////////////////////////////////////////////
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   // first empty the movements container
   containerMovements.innerHTML = ''; // innerHTML is similar to the textcontent. the only difference is that text content only returns the text content of an element while innerHTML returns the whole element with html tags also.
 
-  movements.forEach(function (mov, i) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements; // sorting the array
+
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     // template literals are amazing to create html like below
     const html = `
@@ -242,16 +244,100 @@ btnLoan.addEventListener('click', function (e) {
   inputLoanAmount.value = '';
 });
 
-
-
-
 // using flat method to calculate the total movments.
 const accountMovements = accounts.map(acc => acc.movements); // this will return an array of movements of different acconts
 const allMovements = accountMovements.flat().reduce((acc, mov) => acc + mov, 0); // this will give total movements of all the accounts and sum it all up.
-console.log(allMovements);
-
+// console.log(allMovements);
 
 // flatmap combines both flat and map methods of array
-const overallBalance2 = accounts.flatMap(acc => acc.movements)
-console.log(overallBalance2);
+const overallBalance2 = accounts.flatMap(acc => acc.movements);
+// console.log(overallBalance2);
 // flatmap only goes 1 level deep and we cannot change it. for more nested use flat.
+
+let isSorted = false;
+// sorting movements
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !isSorted);
+  isSorted = !isSorted;
+});
+
+// using arrays.from method
+labelBalance.addEventListener('click', function () {
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', ''))
+  );
+
+  console.log(movementsUI);
+});
+
+// we can also use spread operator to convert nodelist to array
+// but array.from is a nicer way to do so
+
+/// Arryas method practice
+// 1.
+// storing all the movements into one big array
+const bankDepositSum = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov > 0)
+  .reduce((sum, curr) => sum + curr, 0);
+
+// console.log(bankDepositSum);
+
+// 2. get all those movements which is at least 1000
+// const numDeposits1000 = accounts
+// .flatMap(acc => acc.movements)
+// .filter(mov => mov >= 1000)
+// .length
+
+// console.log(numDeposits1000);
+
+// other way using reduce
+const numDeposits1000 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((count, curr) => (curr >= 1000 ? ++count : count), 0);
+
+// count + 1 = count++ would not work here hehe. we can use ++count here.
+console.log(numDeposits1000);
+
+// let a = 10;
+// console.log(a++);
+// console.log(a);
+
+// 3. create an object from reduce methods.
+const { deposits, withdrawals } = accounts // imeediatly destructuring
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, curr) => {
+      // curr > 0 ? (sums.deposits += curr) : (sums.withdrawals += curr);
+
+      sums[curr > 0 ? 'deposits' : 'withdrawals'] += curr;
+
+      return sums; // in the array funcitons, if we use a block then we need to explicitly write return keyword. never forget this.
+    },
+    { deposits: 0, withdrawals: 0 }
+  );
+
+// console.log(sums);
+console.log(deposits, withdrawals);
+
+// 4. simple function that convert any string to title case
+// this is a nice title -> This Is a Nice Title
+
+const convertTitleCase = function (title) {
+  const capitalize = str => str[0].toUpperCase() + str.slice(1);
+
+  const exceptions = ['a', 'an', 'the', 'but', 'or', 'on', 'in', 'with', 'and'];
+
+  const titleCase = title
+    .toLowerCase()
+    .split(' ')
+    .map(word => (exceptions.includes(word) ? word : capitalize(word)))
+    .join(' ');
+  return capitalize(titleCase);
+};
+
+console.log(convertTitleCase('this is a nice title'));
+console.log(convertTitleCase('this is a LONG title but not too long'));
+console.log(convertTitleCase('and here is another title with an EXAMPLE'));
