@@ -158,6 +158,11 @@ const updateUI = function (acc) {
 
 let currentAccount;
 
+//faking that we allways login
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
+
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault(); // prevent form from submitting.
 
@@ -299,7 +304,7 @@ const numDeposits1000 = accounts
   .reduce((count, curr) => (curr >= 1000 ? ++count : count), 0);
 
 // count + 1 = count++ would not work here hehe. we can use ++count here.
-console.log(numDeposits1000);
+// console.log(numDeposits1000);
 
 // let a = 10;
 // console.log(a++);
@@ -320,24 +325,37 @@ const { deposits, withdrawals } = accounts // imeediatly destructuring
   );
 
 // console.log(sums);
-console.log(deposits, withdrawals);
+// console.log(deposits, withdrawals);
 
 // 4. simple function that convert any string to title case
 // this is a nice title -> This Is a Nice Title
 
-const convertTitleCase = function (title) {
-  const capitalize = str => str[0].toUpperCase() + str.slice(1);
+// const convertTitleCase = function (title) {
+//   const capitalize = str => str[0].toUpperCase() + str.slice(1);
 
-  const exceptions = ['a', 'an', 'the', 'but', 'or', 'on', 'in', 'with', 'and'];
+//   const exceptions = ['a', 'an', 'the', 'but', 'or', 'on', 'in', 'with', 'and'];
 
-  const titleCase = title
-    .toLowerCase()
-    .split(' ')
-    .map(word => (exceptions.includes(word) ? word : capitalize(word)))
-    .join(' ');
-  return capitalize(titleCase);
-};
+//   const titleCase = title
+//     .toLowerCase()
+//     .split(' ')
+//     .map(word => (exceptions.includes(word) ? word : capitalize(word)))
+//     .join(' ');
+//   return capitalize(titleCase);
+// };
 
-console.log(convertTitleCase('this is a nice title'));
-console.log(convertTitleCase('this is a LONG title but not too long'));
-console.log(convertTitleCase('and here is another title with an EXAMPLE'));
+// console.log(convertTitleCase('this is a nice title'));
+// console.log(convertTitleCase('this is a LONG title but not too long'));
+// console.log(convertTitleCase('and here is another title with an EXAMPLE'));
+
+// adding dates
+// day/month/year
+
+const now = new Date();
+const day = `${now.getDate()}`.padStart(2, 0);
+const month = `${now.getMonth() + 1}`.padStart(2, 0); // zero based
+const year = now.getFullYear();
+const hour = now.getHours();
+const min = now.getMinutes();
+labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+
+
