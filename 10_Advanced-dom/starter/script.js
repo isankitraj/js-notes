@@ -200,31 +200,67 @@ btnScrollTo.addEventListener('click', function (e) {
 
 // rgb(255,255,255)
 
-const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+// const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
-const randomColor = () =>
-  `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
+// const randomColor = () =>
+//   `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
 
-console.log(randomColor()); // this will return a random color.
+// console.log(randomColor()); // this will return a random color.
+
+// document.querySelector('.nav__link').addEventListener('click', function(e){
+//   this.style.backgroundColor = randomColor()   // this will point to the element on which event is occuring
+
+//   console.log('LINK', e.target); // this is where the event happenend
+
+// })
+
+// // parent of nav link
+// document.querySelector('.nav__links').addEventListener('click', function(e){
+//   this.style.backgroundColor = randomColor()
+//   console.log('LINK', e.target); // this is where the event happenend
+
+// })
+
+// // parent of navlinks
+// document.querySelector('.nav').addEventListener('click', function(e){
+//   this.style.backgroundColor = randomColor()
+//   console.log('LINK', e.target); // this is where the event happenend
+
+// })
+
+//////////////////////////////////////////////////////////
+// Event Delegation implementation in page navigation.
+//////////////////////////////////////////////////////////////
+
+// document.querySelectorAll('.nav__link').forEach(el => {
+//   el.addEventListener('click', function (e) {
+//     e.preventDefault();
+
+//     const id = this.getAttribute('href');
+//     console.log(id);
+
+//     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+//   });
+// });
 
 
-document.querySelector('.nav__link').addEventListener('click', function(e){
-  this.style.backgroundColor = randomColor()   // this will point to the element on which event is occuring
-  
-  console.log('LINK', e.target); // this is where the event happenend
-  
-})
 
-// parent of nav link
-document.querySelector('.nav__links').addEventListener('click', function(e){
-  this.style.backgroundColor = randomColor()
-  console.log('LINK', e.target); // this is where the event happenend
-  
-})
 
-// parent of navlinks
-document.querySelector('.nav').addEventListener('click', function(e){
-  this.style.backgroundColor = randomColor()
-  console.log('LINK', e.target); // this is where the event happenend
-  
-})
+
+
+
+// optimized way
+
+// 1. Add event listener to common parent element.
+// 2. Determine what element originated the event.
+
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  // console.log(e.target);
+
+  // Matching strategy
+  if (e.target.classList.contains('nav__link')) {
+        const id = this.getAttribute('href');
+        console.log(id);
+        document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
+});

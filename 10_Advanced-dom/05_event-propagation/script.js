@@ -17,8 +17,8 @@ document.querySelector('.nav__link').addEventListener('click', function(e){
   // e.currenttarget is the the element to which the event listener is attached.
 
 
-  // stop propogation
-  e.stopPropagation();
+//   // stop propogation
+//   e.stopPropagation();
 
 })
 
