@@ -235,6 +235,7 @@ btnScrollTo.addEventListener('click', function (e) {
 // document.querySelectorAll('.nav__link').forEach(el => {
 //   el.addEventListener('click', function (e) {
 //     e.preventDefault();
+//     console.log(this);
 
 //     const id = this.getAttribute('href');
 //     console.log(id);
@@ -243,12 +244,6 @@ btnScrollTo.addEventListener('click', function (e) {
 //   });
 // });
 
-
-
-
-
-
-
 // optimized way
 
 // 1. Add event listener to common parent element.
@@ -256,11 +251,93 @@ btnScrollTo.addEventListener('click', function (e) {
 
 document.querySelector('.nav__links').addEventListener('click', function (e) {
   // console.log(e.target);
+  e.preventDefault();
 
-  // Matching strategy
   if (e.target.classList.contains('nav__link')) {
-        const id = this.getAttribute('href');
-        console.log(id);
-        document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+    console.log('link');
+    const id = e.target.getAttribute('href');
+    console.log(id);
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
   }
+});
+
+// this techniques really comes handy when we are working with elements that are added dynamically while using using
+// the application, so it's not possible to add event handlers on elements that don't exist at the beginning by using event delegation.
+
+//////////////////////////////////////////////////////
+// DOM TRAVERSING // very important.
+// //////////////////////////////////////////////////////////
+// const h1 = document.querySelector('h1');
+
+// // Going downwards : selecting child element
+// console.log(h1.querySelectorAll('.highlight'));
+// console.log(h1.childNodes);
+// console.log(h1.children); //gives the html collection which is a live collection // only works for direct children
+
+// h1.firstElementChild.style.color = 'white';
+// h1.lastElementChild.style.color = 'orangered';
+
+// // Going upwards: selecting parents
+// console.log(h1.parentNode);
+// console.log(h1.parentElement);
+
+// h1.closest('.header').style.background = 'var(--gradient-secondary)'; // very important // used frequently in event delegation// we have used css variable here.
+
+// h1.closest('h1').style.background = 'var(--gradient-primary)';
+
+// // Going sideways: siblings
+// console.log(h1.previousElementSibling);
+// console.log(h1.nextElementSibling);
+
+// console.log(h1.previousSibling);
+// console.log(h1.nextSibling);
+
+// console.log(h1.parentElement.children);
+
+// [...h1.parentElement.children].forEach(el => {
+//   if (el !== h1) {
+//     el.style.transform = 'scale(0.5)';
+//   }
+// });
+
+// ////////////////////////////////////////////////////
+// Building a tabbed Component // revise again // tricky to implement
+////////////////////////////////////////////////////
+
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+// tabs.forEach(element => {
+//   element.addEventListener('click', ()=>{
+//     console.log('TAB');
+
+//   })
+// });
+
+//using event delegation
+tabsContainer.addEventListener('click', function (e) {
+  const clicked = e.target.closest('.operations__tab');
+  // console.log(clicked);
+
+  // Guard clause // new thing
+  if (!clicked) {
+    return;
+  }
+
+  // Active tab
+  tabs.forEach(tab => tab.classList.remove('operations__tab--active')); // this is something that we do usually
+  clicked.classList.add('operations__tab--active'); // do not put . while adding or removeing the class // very silly mistake
+
+  // console.log(clicked.dataset.tab);
+  
+  // removing active class for all content 
+  tabsContent.forEach(content => {
+    content.classList.remove('operations__content--active')
+  })
+  
+  // Activate content area
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
 });
