@@ -330,14 +330,176 @@ tabsContainer.addEventListener('click', function (e) {
   clicked.classList.add('operations__tab--active'); // do not put . while adding or removeing the class // very silly mistake
 
   // console.log(clicked.dataset.tab);
-  
-  // removing active class for all content 
+
+  // removing active class for all content
   tabsContent.forEach(content => {
-    content.classList.remove('operations__content--active')
-  })
-  
+    content.classList.remove('operations__content--active');
+  });
+
   // Activate content area
   document
     .querySelector(`.operations__content--${clicked.dataset.tab}`)
     .classList.add('operations__content--active');
 });
+
+/////////////////////////////////////////////////////////
+//Passing Arguments to Event Handlers /// menu fade animation
+////////////////////////////////////////////////////////
+
+const nav = document.querySelector('.nav');
+
+const handler = function (event, opacity) {
+  const e = event;
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(el => {
+      if (el !== link) {
+        el.style.opacity = this;
+      }
+    });
+
+    logo.style.opacity = this;
+  }
+};
+
+// the problem is that how can we pass  the argument required by the handler function.
+// nav.addEventListener('mouseover', function (e) {
+//   handler(e, 0.5)
+// }); // mouse over do bubbling while mouseenter doenst
+
+// nav.addEventListener('mouseout', function (e) {
+//   handler(e, 1)
+// });
+
+// above code is fine, but we can do even better. by removing anonymous function call
+// using bind method
+// passing "argument" into handler
+nav.addEventListener('mouseover', handler.bind(0.5));
+
+nav.addEventListener('mouseout', handler.bind(1));
+
+/////////////////////////////////////////////////////
+// implementing sticky navigation// the scroll event
+/////////////////////////////////////////////////////
+// scroll event is available on window and not on object.
+// scroll event is not that efficient so it should be avoided.
+
+// const initialCoords = section1.getBoundingClientRect()
+// console.log(initialCoords);
+
+// window.addEventListener('scroll', function(){
+//   // console.log(this.window.scrollY); // we cannot hardcode the value,// we have to calculate dynamically
+
+//   if (this.window.scrollY > initialCoords.top) {
+//     nav.classList.add('sticky')
+//   } else {
+//     nav.classList.remove('sticky')
+//   }
+// })
+
+/////////////////////
+///Optimizing sticky nav using new intersection observer API
+//////////////////
+
+// const obsCallback = function(entries, observer){
+//   entries.forEach(entry => {
+//     console.log(entry);
+//   })
+
+// }
+
+// const obsOptions = {
+//   root: null,
+//   threshold: 0.1,   // means 10 percent of the element // we can specify array of thresholds here as well
+// }
+
+// const observer = new IntersectionObserver(obsCallback, obsOptions);
+// observer.observe(section1);
+
+const header = document.querySelector('.header');
+const navHeight = nav.getBoundingClientRect().height;
+// console.log(navHeight);
+
+const stickynav = function (entries) {
+  const [entry] = entries;
+  // console.log(entry);
+
+  if (!entry.isIntersecting) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
+};
+
+const headerObserver = new IntersectionObserver(stickynav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`, // only px is supported no rem or em or percentage.
+});
+
+headerObserver.observe(header);
+
+//////////////////////////////////
+/// implementing reveling elements on scroll - intersectionObserverapi
+////////////////////////////////////
+const revealSection = function(entries, observer){
+  const [entry] = entries
+
+  if (!entry.isIntersecting) {
+    return
+  }
+  entry.target.classList.remove('section--hidden')
+  observer.unobserve(entry.target)
+}
+
+const allSections = document.querySelectorAll('.section')
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+})
+
+allSections.forEach(function(section) {
+  sectionObserver.observe(section)
+  section.classList.add('section--hidden')
+})
+
+///////////////////////////////////////////////
+//////lazy loading images/////
+////////////////////////////////////////////
+
+const imgTargets = document.querySelectorAll('img[data-src]') // we are selecting those img tag which have data-src property
+
+
+const loadImg = function(entries, observer){
+  const [entry] = entries;
+
+
+  if (!entry.isIntersecting) {
+    return
+  }
+
+  // replace src with data-src
+  entry.target.src = entry.target.dataset.src
+
+  entry.target.addEventListener('load', function(){
+    entry.target.classList.remove('lazy-img')
+  })
+  
+  observer.unobserve(entry.target)
+}
+
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '-200px'
+})
+
+imgTargets.forEach(function(img){
+  imgObserver.observe(img)
+})
