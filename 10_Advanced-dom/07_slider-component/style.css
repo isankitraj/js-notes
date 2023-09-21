@@ -1,0 +1,47 @@
+.slider {
+    max-width: 900px;
+    overflow: hidden;
+    margin: 0 auto;
+    position: relative;
+    height: 500px;
+
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    transition: all 1s;
+    height: 500px;
+    overflow: hidden;
+}
+
+.slide > img {
+    width: 100%;
+    object-fit: cover;
+}
+
+.slider__btn {
+    position: absolute;
+    z-index: 999999;
+    top: 50%;
+    transform: translateY(-50%);
+
+
+    /* styling */
+    background-color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+}
+
+
+.slider__btn--left {
+    left: 20px;
+}
+.slider__btn--right {
+    right: 30px;
+}
+
+

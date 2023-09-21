@@ -1,0 +1,12 @@
+version: '3'
+services:
+  javascript-dev:
+    image: nginx:latest
+    container_name: my-javascript-dev-container
+    working_dir: /my-workspace
+    volumes:
+      - .:/my-workspace
+      - ./10_Advanced-dom/starter:/usr/share/nginx/html
+    command: tail -f /dev/null
+    ports:
+      - "8080:80"  # Forward host port 8080 to container port 80
