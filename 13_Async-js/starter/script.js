@@ -22,12 +22,10 @@ const getCountryDataAndNeighbour = function (country) {
     const [currency] = Object.keys(data.currencies); // parsing currency
 
     const language = Object.keys(data.languages);
-    console.log(data.languages[language[0]]);
+    // console.log(data.languages[language[0]]);
 
     // Render country
     renderCountry(data, language, currency);
-
-
 
     // Get negighbour country 2
     const [neighbour] = data.borders;
@@ -43,10 +41,8 @@ const getCountryDataAndNeighbour = function (country) {
 
     request2.addEventListener('load', function () {
       const [data2] = JSON.parse(this.responseText);
-      console.log(data2);
+      // console.log(data2);
 
-      const [data] = JSON.parse(this.responseText);
-      // console.log(data.languages);
       const [currency] = Object.keys(data.currencies); // parsing currency
 
       const language = Object.keys(data.languages);
@@ -55,7 +51,7 @@ const getCountryDataAndNeighbour = function (country) {
   });
 };
 
-const renderCountry = function (data, language, currency, className='') {
+const renderCountry = function (data, language, currency, className = '') {
   const html = `
     <article class="country ${className}">
           <img class="country__img" src="${data.flags.svg}" />
@@ -78,4 +74,56 @@ const renderCountry = function (data, language, currency, className='') {
 };
 
 // calling the function;
-getCountryDataAndNeighbour('ita');
+// getCountryDataAndNeighbour('ita');
+
+// CONSUMING PROMISES
+////////////////////////////
+// using fetch funciton return a promise, and on all promises we can call the then method.
+///////////////
+// const getCountryData = function (country) {
+//   fetch(`https://restcountries.com/v3.1/alpha/${country}`)
+//     .then(function (response) {
+//       console.log(response); // we will get response text // our respone is stored in body
+//       return response.json(); // respone.json will also return a promise  // so again we will add a then method.
+//     })
+//     .then(function (data) {
+//       console.log(data);
+//       const [currency] = Object.keys(data[0].currencies); // parsing currency
+
+//       const language = Object.keys(data[0].languages); // parsing language
+
+//       renderCountry(data[0], language, currency);
+//     });
+// };
+////////////////////////////////////////
+// simplified version of above code // and 
+// chaining promises
+const getCountryData = function (country) {
+  // country 1
+  fetch(`https://restcountries.com/v3.1/alpha/${country}`)
+    .then(response => response.json())
+    .then(data => {
+      const [currency] = Object.keys(data[0].currencies); // parsing currency
+      const language = Object.keys(data[0].languages); // parsing language
+      renderCountry(data[0], language, currency);
+
+      const neighbour = data[0].borders[0];
+
+      if (!neighbour) {
+        return;
+      }
+      // country 2
+      return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
+    })
+    .then(response => response.json())
+    .then(neighbour => {
+      // console.log(neighbour[0]);
+      const [currency2] = Object.keys(neighbour[0].currencies); // parsing currency
+      const language2 = Object.keys(neighbour[0].languages);
+      renderCountry(neighbour[0], language2, currency2, 'neighbour');
+    });
+};
+
+getCountryData('usa');
+
+// promises must be parsed using .json() method.
