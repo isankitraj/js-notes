@@ -96,7 +96,13 @@ const renderCountry = function (data, language, currency, className = '') {
 //     });
 // };
 ////////////////////////////////////////
-// simplified version of above code // and 
+
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  countriesContainer.style.opacity = 1;
+};
+
+// simplified version of above code // and
 // chaining promises
 const getCountryData = function (country) {
   // country 1
@@ -121,9 +127,27 @@ const getCountryData = function (country) {
       const [currency2] = Object.keys(neighbour[0].currencies); // parsing currency
       const language2 = Object.keys(neighbour[0].languages);
       renderCountry(neighbour[0], language2, currency2, 'neighbour');
+    })
+    .catch(err => {
+      console.log(`${err} 💥💥💥`);
+      renderError(`something went wrong💥💥 ${err.message} Try again!`);
+    })
+    .finally(() => {   // finally method is not always useful
+      console.log(
+        `This method is always called no matter whether the promise has been rejected or not.`
+      );
     });
 };
 
-getCountryData('usa');
+btn.addEventListener('click', function () {
+  getCountryData('ind');
+});
+
+
+getCountryData('meow');
+
 
 // promises must be parsed using .json() method.
+
+// A promise in which an error happen is a rejected promise.
+// two way to handle rejections.
