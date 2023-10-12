@@ -96,6 +96,14 @@ const renderCountry = function (data, language, currency, className = '') {
 //     });
 // };
 ////////////////////////////////////////
+const getJSON = function (url, errorMsg = 'something went wrong') {
+  return fetch(url).then(response => {
+    if (!response.ok) {
+      throw new Error(`${errorMsg} ${response.status}`);
+    }
+    return response.json();
+  });
+};
 
 const renderError = function (msg) {
   countriesContainer.insertAdjacentText('beforeend', msg);
@@ -106,8 +114,18 @@ const renderError = function (msg) {
 // chaining promises
 const getCountryData = function (country) {
   // country 1
-  fetch(`https://restcountries.com/v3.1/alpha/${country}`)
-    .then(response => response.json())
+  // fetch(`https://restcountries.com/v3.1/alpha/${country}`)
+  //   .then(response => {
+  //     console.log(response);
+  //     if (!response.ok) {
+  //       throw new Error(`Country not found ${response.status}`);
+  //     }
+  //     return response.json();
+  //   })
+  getJSON(
+    `https://restcountries.com/v3.1/alpha/${country}`,
+    'country not found'
+  )
     .then(data => {
       const [currency] = Object.keys(data[0].currencies); // parsing currency
       const language = Object.keys(data[0].languages); // parsing language
@@ -119,7 +137,10 @@ const getCountryData = function (country) {
         return;
       }
       // country 2
-      return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
+      return getJSON(
+        `https://restcountries.com/v3.1/alpha/${neighbour}`,
+        'country not found'
+      );
     })
     .then(response => response.json())
     .then(neighbour => {
@@ -132,7 +153,8 @@ const getCountryData = function (country) {
       console.log(`${err} 💥💥💥`);
       renderError(`something went wrong💥💥 ${err.message} Try again!`);
     })
-    .finally(() => {   // finally method is not always useful
+    .finally(() => {
+      // finally method is not always useful
       console.log(
         `This method is always called no matter whether the promise has been rejected or not.`
       );
@@ -143,11 +165,48 @@ btn.addEventListener('click', function () {
   getCountryData('ind');
 });
 
-
-getCountryData('meow');
-
-
 // promises must be parsed using .json() method.
 
 // A promise in which an error happen is a rejected promise.
 // two way to handle rejections.
+
+////////////////////////////////challenge 1
+const apiKey = '957856336285725796934x40417';
+
+const whereAmI = function (lat, lng) {
+  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json&auth=${apiKey}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Problem with geocoding ${response.status}`);
+      }
+
+      return response.json();
+    })
+    .then(data => {
+      console.log(data);
+      console.log(`You are in ${data.state}, ${data.country}`);
+      // return fetch(`https://restcountries.com/v3.1/alpha/${country}`)
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+// whereAmI(-33.933, 18.474);
+
+// using async await
+const whereAmI2 = async function (country) {
+  // fetch(`https://restcountries.com/v3.1/alpha/${country}`).then(res =>
+  //   console.log(res)
+  // );
+
+  //same as above code but more elegant
+  const res = await fetch(`https://restcountries.com/v3.1/alpha/${country}`);
+  console.log(res);
+  const data = await res.json();
+  console.log(data);
+  
+};
+
+whereAmI2('ind');
+console.log('first');
